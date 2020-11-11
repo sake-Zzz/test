@@ -1,6 +1,6 @@
 <template>
   <div class="CenterList">
-      <a href="https://act.mogujie.com/zz1x67" >">
+      <a href="https://act.mogujie.com/zz1x67" >
           <img src="~assets/img/home/recommend_bg.jpg" alt="">
       </a>
   </div>

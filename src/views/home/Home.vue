@@ -3,18 +3,30 @@
     <Navbar class="nav-bar">
       <div slot="center">购物街</div>
     </Navbar>
-
-    <Bscroll class="warppers">
+<Tabbarlist
+        :title="['流行', '新款', '精选']"
+        @tabbarclick="getgoods"
+        ref="contenttabbar"
+        :class="istabbar?'showtabbar':'isnone'" 
+      />
+    <Bscroll class="warppers" 
+    ref="scroll"
+     :probe-type = 3 
+     @contentscroll="contentscroll"
+     @pullingUp="moreload"
+      > 
       <Banner :imges="banner"></Banner>
       <Recommend :recommend="recommend" />
       <CenterList />
       <Tabbarlist
-        class="tabarcon"
         :title="['流行', '新款', '精选']"
         @tabbarclick="getgoods"
+        ref="contenttabbar"
+        :class="istabbar?'isnone':''"
       />
       <GoodsList :goodsList="goods[count].list" />
     </Bscroll>
+    <ScrollTop v-show="isshow" @click.native="back" />
    
   </div>
 </template>
@@ -22,6 +34,7 @@
 <script>
 import Navbar from "components/common/navbar/NavBar";
 import Tabbarlist from "components/content/tabbarlist/TabBarList";
+import ScrollTop from "components/content/scrolltop/ScrollTop"
 import GoodsList from "components/content/goods/GoodsList";
 import Bscroll from "components/common/scroll/Scroll";
 import Banner from "./childComponents/Banner";
@@ -29,7 +42,6 @@ import Recommend from "./childComponents/HomeRecommend";
 import CenterList from "./childComponents/HomeCenterList";
 
 import { getHomeMultidata, getHomegoods } from "../../network/home";
-// import BScroll from "better-scroll";
 export default {
   name: "Home",
   components: {
@@ -40,6 +52,7 @@ export default {
     Tabbarlist,
     GoodsList,
     Bscroll,
+    ScrollTop,
   },
   data() {
     return {
@@ -51,6 +64,9 @@ export default {
         sell: { page: 0, list: [] },
       },
       count: "pop",
+      isshow:false,
+      counts:0,
+      istabbar:false
       // scroll: null,
       // m: 0,
     };
@@ -63,8 +79,34 @@ export default {
     this.getHomegoods("sell");
   },
   methods: {
+    // 点击回到顶部
+    back(){
+      this.$refs.scroll.scrollTo(0,0,500)
+    },
+    // 判断滚动距离  
+    contentscroll(posistion){
+      if(posistion.y<-592){
+        this.istabbar=true
+      }
+      else{
+        this.istabbar=false
+      }
+      if(posistion.y>-1000){
+        this.isshow=false
+      }
+      else{
+        this.isshow=true
+      }
+    },
+    //  加载更多 
 
+    moreload(){
+      this.getHomegoods(this.count) 
+     this.$refs.scroll.refresh()
+      this.$refs.scroll.finish()
+    },
 
+  // 判断那个页面显示
     getgoods(index) {
       switch (index) {
         case 0:
@@ -81,7 +123,7 @@ export default {
 
     // 网络请求
 
-
+  // Banner图
     getHomeMultidata() {
       getHomeMultidata().then((res) => {
         this.banner = res.data.banner.list;
@@ -96,6 +138,8 @@ export default {
         // console.log("1", res.data.list);
       });
       this.goods[type].page += 1;
+
+      
     },
   },
 };
@@ -116,7 +160,7 @@ export default {
   z-index: 100;
 }
 .tabarcon {
-  position: sticky;
+  /* position: sticky; */
   top: 44px;
   background-color: #fff;
 }
@@ -127,6 +171,14 @@ export default {
   bottom:49px;
   left: 0;
   right: 0;
-  /* overflow: hidden; */
+  overflow: hidden;
+}
+.showtabbar{
+  position: relative;
+  z-index: 100;
+  background-color: #fff;
+}
+.isnone{
+  display: none;
 }
 </style>
