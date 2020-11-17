@@ -1,7 +1,7 @@
 <template>
   <div class="GoodsList">
       <!-- {{goodsList}} -->
-      <GoodsListItem v-for="(item,index) in goodsList" :key="index" :GoodsListItem ="item" />
+      <GoodsListItem v-for="(item,index) in goodsList" :key="index" :GoodsListItem ="item"  />
   </div>
 </template>
 

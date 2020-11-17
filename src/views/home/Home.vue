@@ -5,8 +5,7 @@
     </Navbar>
 <Tabbarlist
         :title="['流行', '新款', '精选']"
-        @tabbarclick="getgoods"
-        ref="contenttabbar"
+        @tabbarclick="getgoods" 
         :class="istabbar?'showtabbar':'isnone'" 
       />
     <Bscroll class="warppers" 
@@ -21,13 +20,11 @@
       <Tabbarlist
         :title="['流行', '新款', '精选']"
         @tabbarclick="getgoods"
-        ref="contenttabbar"
         :class="istabbar?'isnone':''"
       />
       <GoodsList :goodsList="goods[count].list" />
     </Bscroll>
     <ScrollTop v-show="isshow" @click.native="back" />
-   
   </div>
 </template>
 
@@ -42,7 +39,7 @@ import Recommend from "./childComponents/HomeRecommend";
 import CenterList from "./childComponents/HomeCenterList";
 
 import { getHomeMultidata, getHomegoods } from "../../network/home";
-export default {
+export default { 
   name: "Home",
   components: {
     Navbar,
@@ -77,6 +74,11 @@ export default {
     this.getHomegoods("pop");
     this.getHomegoods("new");
     this.getHomegoods("sell");
+
+    // 监测图片加载
+    this.$bus.$on("itemimgload",()=>{
+      this.$refs.scroll.refresh()
+    })
   },
   methods: {
     // 点击回到顶部
@@ -102,8 +104,7 @@ export default {
 
     moreload(){
       this.getHomegoods(this.count) 
-     this.$refs.scroll.refresh()
-      this.$refs.scroll.finish()
+      this.$refs.scroll.finishPullUp()
     },
 
   // 判断那个页面显示
@@ -134,8 +135,8 @@ export default {
     getHomegoods(type) {
       const page = this.goods[type].page + 1;
       getHomegoods(type, page).then((res) => {
-        this.goods[type].list = this.goods[type].list.concat(res.data.list);
-        // console.log("1", res.data.list);
+        // this.goods[type].list = this.goods[type].list.concat(res.data.list);
+        this.goods[type].list.push(...res.data.list)
       });
       this.goods[type].page += 1;
 

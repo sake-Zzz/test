@@ -1,6 +1,6 @@
 <template>
-  <div class="GoodsListItem">
-    <img :src="GoodsListItem.show.img" alt="">
+  <div class="GoodsListItem " @click="getdelite">
+    <img :src="GoodsListItem.show.img" alt="" @load="imgload">
     <div>
         <p class="title">{{GoodsListItem.title}}</p>
         <span class="price">{{GoodsListItem.price}}</span>
@@ -18,6 +18,15 @@ export default {
             default(){
                 return {}
             }
+        }
+    },
+    methods:{
+        imgload(){
+            this.$bus.$emit("itemimgload")
+        },
+        getdelite(){
+            // console.log(this.GoodsListItem.iid)
+            this.$router.push({path:"/details",query:{id:this.GoodsListItem.iid}})
         }
     }
 }

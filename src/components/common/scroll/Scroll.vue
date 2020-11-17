@@ -27,26 +27,28 @@ export default {
       pullUpLoad: true,
       probeType: this.probeType,
     });
+    console.log(this.scroll.scrollTop)
     this.scroll.on("scroll", (position) => {
-      // console.log(position)
       this.$emit("contentscroll", position);
+    //  console.log(position)
     });
     this.scroll.on("pullingUp", () => {
       // console.log("上拉加载更多")
       this.$emit("pullingUp");
+       
+          
     });
   },
   methods: {
     scrollTo(x, y, time = 300) {
       this.scroll.scrollTo(x, y, time);
     },
-    // this.scroll.finishPullUp();
-    finish(){
-      this.scroll.finishPullUp();
-    },
     refresh(){
       this.scroll.refresh()
-    }
+    },
+    finishPullUp(){
+      this.scroll.finishPullUp();
+    },
   },
 };
 </script>
